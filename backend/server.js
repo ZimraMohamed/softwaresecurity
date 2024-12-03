@@ -27,7 +27,6 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-
 // Set up email transporter using Nodemailer
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE || 'gmail',
@@ -73,6 +72,11 @@ const sendLoginEmail = (email, subject, text) => {
     }
   });
 };
+
+// Root route
+app.get('/', (req, res) => {
+  res.send('Server is running successfully!');
+});
 
 // Register endpoint
 app.post('/api/register', async (req, res) => {
@@ -139,7 +143,6 @@ app.post('/api/login', async (req, res) => {
       const activityLog = new AdminActivityLog({ activity: 'Admin logged in' });
       await activityLog.save();
 
-      console.log('Sending login email to admin...');
       sendLoginEmail(email, 'Admin Login Notification', 'You have successfully logged in as an admin.');
 
       return res.status(200).json({ message: 'Admin login successful', token: adminCheck.token });
@@ -169,7 +172,6 @@ app.post('/api/login', async (req, res) => {
     const activityLog = new AdminActivityLog({ activity: `User logged in: ${email}` });
     await activityLog.save();
 
-    console.log('Sending login email to user...');
     sendLoginEmail(email, 'User Login Notification', 'You have successfully logged in.');
 
     return res.status(200).json({ message: 'Login successful', token });
@@ -178,7 +180,6 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 // Get user list and activity log for admin
 app.get('/api/admin/activity-log', async (req, res) => {
@@ -202,6 +203,11 @@ app.get('/api/admin/activity-log', async (req, res) => {
     console.error("Error fetching activity log:", error);
     res.status(500).json({ message: 'Server error' });
   }
+});
+
+// Catch-all for undefined routes
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
 });
 
 // Start server
