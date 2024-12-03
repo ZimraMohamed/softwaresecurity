@@ -1,0 +1,34 @@
+/* Navigation Bar Styles */
+.navbar {
+    background-color: #002366 !important; /* Dark blue background */
+}
+
+.navbar-brand, 
+.navbar .btn-outline-success, 
+.navbar .form-control {
+    color: white; /* White text for brand, input, and buttons */
+}
+
+.navbar .btn-outline-success {
+    border-color: white; /* White border for outline button */
+}
+
+.navbar .btn-outline-success:hover {
+    background-color: white; /* White background on hover */
+    color: #002366; /* Dark blue text on hover */
+}
+
+.navbar .form-control {
+    background-color: transparent; /* Transparent background for input field */
+    border: 1px solid white; /* White border for input field */
+}
+
+.navbar .form-control::placeholder {
+    color: white; /* White placeholder text */
+}
+
+.navbar .form-control:focus {
+    box-shadow: none; /* Remove focus outline */
+    background-color: transparent; /* Keep transparent on focus */
+    color: white; /* White text on focus */
+}

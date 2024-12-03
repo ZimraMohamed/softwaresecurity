@@ -8,25 +8,67 @@ const Register = () => {
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
+  const [errors, setErrors] = useState({});
+  const [passwordValid, setPasswordValid] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    if (name === 'password') {
+      validatePassword(value); // Validate password as the user types
+    }
+  };
+
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    if (!regex.test(password)) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password: "Password must contain at least 8 characters, including uppercase, lowercase, numbers, and symbols."
+      }));
+      setPasswordValid(false);
+    } else {
+      setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
+      setPasswordValid(true);
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { password, confirmPassword } = formData;
+    const newErrors = {};
+
+    if (!passwordValid) {
+      newErrors.password = "Password does not meet the requirements.";
+    }
+
+    if (password !== confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     try {
-      const response = await axios.post('http://localhost:5000/register', formData);
+      const response = await axios.post('http://localhost:5000/register', {
+        full_name: formData.full_name,
+        email: formData.email,
+        password: formData.password
+      });
 
       if (response.status === 201) {
         alert('Registration successful');
-        navigate('/login');  // Redirect to login page
+        navigate('/login'); 
       }
     } catch (error) {
       console.error("Registration Error: ", error.response ? error.response.data : error.message);
-  alert(error.response ? error.response.data.message : 'Registration failed');
+      alert(error.response ? error.response.data.message : 'Registration failed');
     }
   };
 
@@ -71,9 +113,25 @@ const Register = () => {
                 onChange={handleChange}
                 placeholder="Enter your password"
               />
+              {errors.password && <small className="text-danger">{errors.password}</small>}
+            </div>
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirm Password</label>
+              <input
+                type="password"
+                className="form-control"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Re-enter your password"
+              />
+              {errors.confirmPassword && <small className="text-danger">{errors.confirmPassword}</small>}
             </div>
             <br />
-            <button type="submit" className="btn btn-primary">Submit</button>
+            <button type="submit" className="btn btn-primary" disabled={!passwordValid}>
+              Submit
+            </button>
           </form>
         </div>
       </div>

@@ -30,13 +30,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Helper function to send email
+// Helper function to send email verification link
 const sendVerificationEmail = (email, token) => {
+  const verificationLink = `http://localhost:3000/verify-email?token=${token}`; // Replace with your frontend URL
   const mailOptions = {
     from: process.env.MAIL_USER,
     to: email,
     subject: 'Email Verification',
-    text: `Please verify your email by clicking on the following link: http://localhost:5000/api/verify-email?token=${token}`,
+    text: `Please verify your email by clicking on the following link: ${verificationLink}`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -170,7 +171,6 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
-
 
 
 // Get user list and activity log for admin

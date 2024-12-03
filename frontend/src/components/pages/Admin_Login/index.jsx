@@ -1,43 +1,41 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import './Login.css';
 import axios from 'axios';
+import './Admin_Login.css';
 
-const Login = () => {
+const Admin_Login = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [message, setMessage] = useState('');
     const navigate = useNavigate();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [loginError, setLoginError] = useState(null);
 
-    const handleSubmit = async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-
         try {
             const response = await axios.post('http://localhost:5000/login', { email, password });
-            if (response.status === 200 && response.data.message === 'Login successful') {
-                alert('Login successful');
-
-                // Save the token to local storage for later use
+            setMessage(response.data.message);
+            if (response.data.message === 'Admin login successful') {
+                alert('Admin login successful');
+                // Save token to local storage
                 localStorage.setItem('token', response.data.token);
-
-                navigate("/"); // Redirect to the main page after successful login
-            } else {
-                setLoginError(response.data.message);
+                // Navigate to the admin activity log page
+                navigate('/admin-activity-log');
             }
         } catch (error) {
-            console.error("Error logging in:", error);
-            setLoginError(error.response?.data?.message || 'Login failed');
+            setMessage('Login failed. Please try again.');
+            alert('Login failed. Please try again.');
+            console.error(error);
         }
     };
 
     return (
         <div className="background-image10">
             <div className="login-container" id="login-container">
-                <form className="form-signin text-center" onSubmit={handleSubmit} id="form-signin">
+                <form className="form-signin text-center" id="form-signin" onSubmit={handleLogin}>
                     <div className="login-form" id="form-container">
                         <div id="form-child">
-                            <h2 className="form-heading">User Login</h2>
+                            <h2 className="form-heading">Admin Login</h2>
                             <div className="mb-4">
                                 <div className="form-group form-group-1">
                                     <label htmlFor="email">Email</label>
@@ -47,42 +45,32 @@ const Login = () => {
                                         id="email"
                                         className="form-control"
                                         placeholder="Enter your email"
-                                        required
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
+                                        required
                                     />
                                 </div>
 
                                 <div className="form-group form-group-2">
-                                    <label htmlFor="inputPassword">Password</label>
+                                    <label htmlFor="password">Password</label>
                                     <input
                                         type="password"
                                         name="password"
                                         id="password"
                                         className="form-control"
                                         placeholder="Enter your password"
-                                        required
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
+                                        required
                                     />
                                 </div>
                             </div>
-
-                            {loginError && (
-                                <div className="alert alert-danger" id="login-error">
-                                    <i className="fas fa-exclamation-circle"></i> {loginError}
-                                </div>
-                            )}
 
                             <button className="btn btn-outline-light btn-lg btn-block form-group-3" type="submit">
                                 Log in
                             </button>
                             <br />
-                            <p className="link">
-                                <a href="Register">
-                                    <center>Don't have an account? Sign Up here</center>
-                                </a>
-                            </p>
+                            {message && <p>{message}</p>}
                         </div>
                     </div>
                 </form>
@@ -91,4 +79,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Admin_Login;

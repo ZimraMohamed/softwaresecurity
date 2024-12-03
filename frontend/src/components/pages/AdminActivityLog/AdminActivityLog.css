@@ -1,0 +1,36 @@
+/* AdminActivityLog.css */
+.background-image {
+    background-image: url('ss.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2, h3 {
+    text-align: center;
+    color: #333;
+}
+
+.list-group-item {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mt-5 {
+    margin-top: 3rem !important;
+}
+
+.mb-3, .mb-5 {
+    margin-bottom: 3rem !important;
+}
