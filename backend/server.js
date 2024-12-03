@@ -73,10 +73,10 @@ const sendLoginEmail = (email, subject, text) => {
   });
 };
 
-// Root route
 app.get('/', (req, res) => {
   res.send('Server is running successfully!');
 });
+
 
 // Register endpoint
 app.post('/api/register', async (req, res) => {
