@@ -15,7 +15,7 @@ const AdminActivityLog = () => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:5000/admin/activity-log', {
+                const response = await axios.get('https://softwaresecurity.vercel.app/admin/activity-log', {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 

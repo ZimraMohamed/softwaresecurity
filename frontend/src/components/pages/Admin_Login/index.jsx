@@ -13,7 +13,7 @@ const Admin_Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/login', { email, password });
+            const response = await axios.post('https://softwaresecurity.vercel.app/login', { email, password });
             setMessage(response.data.message);
             if (response.data.message === 'Admin login successful') {
                 alert('Admin login successful');

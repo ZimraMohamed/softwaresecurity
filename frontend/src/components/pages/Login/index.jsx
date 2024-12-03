@@ -14,7 +14,7 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:5000/login', { email, password });
+            const response = await axios.post('https://softwaresecurity.vercel.app/login', { email, password });
             if (response.status === 200 && response.data.message === 'Login successful') {
                 alert('Login successful');
 
