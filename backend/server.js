@@ -18,12 +18,15 @@ const app = express();
 connectDB();
 
 // Middleware setup
-app.use(cors({
-  origin: 'https://www.zimramohamed.me',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Restrict HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
-  credentials: true, // Enable sending cookies and credentials
-}));
+const corsOptions = {
+  origin: 'https://www.zimramohamed.me', // Allow only this origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow these HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
+  credentials: true, // If cookies or credentials are sent
+};
+
+app.use(cors(corsOptions));
+
 
 // Set up email transporter using Nodemailer
 const transporter = nodemailer.createTransport({
