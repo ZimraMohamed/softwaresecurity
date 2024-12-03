@@ -56,7 +56,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post('https://softwaresecurity.vercel.app/register', {
+      const response = await axios.post('https://softwaresecurity.vercel.app/api/register', {
         full_name: formData.full_name,
         email: formData.email,
         password: formData.password
