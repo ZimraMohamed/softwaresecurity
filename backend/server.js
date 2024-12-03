@@ -75,7 +75,7 @@ const sendLoginEmail = (email, subject, text) => {
 };
 
 // Register endpoint
-app.post('/register', async (req, res) => {
+app.post('api/register', async (req, res) => {
   const { full_name, email, password } = req.body;
 
   try {
@@ -129,7 +129,7 @@ app.get('/api/verify-email', async (req, res) => {
 });
 
 // Login endpoint
-app.post('/login', async (req, res) => {
+app.post('api/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -181,7 +181,7 @@ app.post('/login', async (req, res) => {
 
 
 // Get user list and activity log for admin
-app.get('/admin/activity-log', async (req, res) => {
+app.get('api/admin/activity-log', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
 
   if (!token) {
