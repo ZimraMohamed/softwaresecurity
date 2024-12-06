@@ -12,9 +12,9 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         try {
-            const response = await axios.post('https://softwaresecurity.vercel.app/api/login', { email, password });
+            const response = await axios.post('http://localhost:5000/login', { email, password });
+            console.log(response.data); // Debugging: log response data
             if (response.status === 200 && response.data.message === 'Login successful') {
                 alert('Login successful');
 

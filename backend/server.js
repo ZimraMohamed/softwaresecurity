@@ -6,28 +6,22 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const connectDB = require('./database');
-const User = require('./User'); // Import user model
-const AdminActivityLog = require('./models/AdminActivityLog'); // Import admin activity log model
-const verifyAdmin = require('./admin'); // Import admin verification logic
-require('dotenv').config(); // To access JWT_SECRET and other environment variables from .env file
+const User = require('./User'); 
+const AdminActivityLog = require('./models/AdminActivityLog'); 
+const verifyAdmin = require('./admin'); 
+require('dotenv').config(); 
 
-// Initialize express app
+
 const app = express();
 
-// Connect to MongoDB
+
 connectDB();
 
-// Middleware setup
-const corsOptions = {
-  origin: ['https://www.zimramohamed.me', 'https://softwaresecurity.vercel.app'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-};
 
-app.use(cors(corsOptions));
+app.use(cors());
+app.use(bodyParser.json());
 
-// Set up email transporter using Nodemailer
+
 const transporter = nodemailer.createTransport({
   service: process.env.EMAIL_SERVICE || 'gmail',
   auth: {
@@ -38,7 +32,7 @@ const transporter = nodemailer.createTransport({
 
 // Helper function to send email verification link
 const sendVerificationEmail = (email, token) => {
-  const verificationLink = `https://www.zimramohamed.me/verify-email?token=${token}`; // Replace with your frontend URL
+  const verificationLink = `http://localhost:3000/verify-email?token=${token}`; 
   const mailOptions = {
     from: process.env.MAIL_USER,
     to: email,
@@ -55,7 +49,7 @@ const sendVerificationEmail = (email, token) => {
   });
 };
 
-// Helper function to send login email
+
 const sendLoginEmail = (email, subject, text) => {
   const mailOptions = {
     from: process.env.MAIL_USER,
@@ -73,13 +67,8 @@ const sendLoginEmail = (email, subject, text) => {
   });
 };
 
-app.get('/', (req, res) => {
-  res.send('Server is running successfully!');
-});
-
-
 // Register endpoint
-app.post('/api/register', async (req, res) => {
+app.post('/register', async (req, res) => {
   const { full_name, email, password } = req.body;
 
   try {
@@ -133,7 +122,7 @@ app.get('/api/verify-email', async (req, res) => {
 });
 
 // Login endpoint
-app.post('/api/login', async (req, res) => {
+app.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
@@ -143,6 +132,7 @@ app.post('/api/login', async (req, res) => {
       const activityLog = new AdminActivityLog({ activity: 'Admin logged in' });
       await activityLog.save();
 
+      console.log('Sending login email to admin...');
       sendLoginEmail(email, 'Admin Login Notification', 'You have successfully logged in as an admin.');
 
       return res.status(200).json({ message: 'Admin login successful', token: adminCheck.token });
@@ -159,7 +149,7 @@ app.post('/api/login', async (req, res) => {
       return res.status(400).json({ message: 'Please verify your email before logging in' });
     }
 
-    // Check password
+    
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(400).json({ message: 'Invalid password' });
@@ -172,6 +162,7 @@ app.post('/api/login', async (req, res) => {
     const activityLog = new AdminActivityLog({ activity: `User logged in: ${email}` });
     await activityLog.save();
 
+    console.log('Sending login email to user...');
     sendLoginEmail(email, 'User Login Notification', 'You have successfully logged in.');
 
     return res.status(200).json({ message: 'Login successful', token });
@@ -182,7 +173,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 // Get user list and activity log for admin
-app.get('/api/admin/activity-log', async (req, res) => {
+app.get('/admin/activity-log', async (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];
 
   if (!token) {
@@ -203,11 +194,6 @@ app.get('/api/admin/activity-log', async (req, res) => {
     console.error("Error fetching activity log:", error);
     res.status(500).json({ message: 'Server error' });
   }
-});
-
-// Catch-all for undefined routes
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
 });
 
 // Start server

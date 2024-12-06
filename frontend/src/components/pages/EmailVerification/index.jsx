@@ -11,7 +11,7 @@ const EmailVerification = () => {
       const token = queryParams.get('token');
 
       try {
-        const response = await axios.get(`https://softwaresecurity.vercel.app/api/verify-email?token=${token}`);
+        const response = await axios.get(`http://localhost:5000/api/verify-email?token=${token}`);
         if (response.status === 200) {
           alert('Email verified successfully. Please log in.');
           navigate('/login');
